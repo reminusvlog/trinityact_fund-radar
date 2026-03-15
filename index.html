@@ -3,227 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ファンド ステータスチャート</title>
+<title>Trinity Act — Fund Status Chart | Reminusvlog</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0c14;
-    --panel: #0e1120;
-    --border: #1e2540;
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --accent3: #f59e0b;
-    --text: #e2e8f0;
-    --muted: #64748b;
-    --grid: rgba(30,37,64,0.7);
+    --bg: #0a0c14; --panel: #0e1120; --border: #1e2540;
+    --accent: #00e5ff; --accent2: #7c3aed; --accent3: #f59e0b;
+    --text: #e2e8f0; --muted: #64748b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-    padding: 24px;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 28px;
-  }
-  .header h1 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-    text-shadow: 0 0 20px rgba(0,229,255,0.3);
-  }
-  .header p {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 4px;
-    letter-spacing: 0.08em;
-  }
-
-  .layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  /* 左：ファンドリスト */
-  .fund-list-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-  .panel-title {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .fund-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-bottom: 2px;
-    user-select: none;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; padding: 24px; }
+  .header { text-align: center; margin-bottom: 28px; }
+  .header h1 { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; text-shadow: 0 0 20px rgba(0,229,255,0.3); }
+  .header p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.08em; }
+  .layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .fund-list-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .panel-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .panel-title { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .view-toggle { display: flex; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .view-btn { border: none; background: transparent; color: var(--muted); padding: 4px 10px; font-size: 0.65rem; cursor: pointer; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.15s; }
+  .view-btn.active { background: rgba(0,229,255,0.15); color: var(--accent); }
+  .fund-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; cursor: pointer; transition: all 0.15s; margin-bottom: 2px; user-select: none; border: 1px solid transparent; }
   .fund-item:hover { background: rgba(255,255,255,0.05); }
-  .fund-item.active {
-    background: rgba(0,229,255,0.08);
-    border: 1px solid rgba(0,229,255,0.2);
-  }
-  .fund-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .fund-name {
-    font-size: 0.82rem;
-    font-weight: 500;
-    flex: 1;
-  }
-  .fund-tier {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-weight: 600;
-  }
+  .fund-item.active { background: rgba(0,229,255,0.08); border-color: rgba(0,229,255,0.2); }
+  .fund-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fund-name { font-size: 0.82rem; font-weight: 500; flex: 1; }
+  .fund-badge { font-family: 'Rajdhani', sans-serif; font-size: 0.62rem; letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
   .tier-s { background: rgba(251,191,36,0.15); color: #fbbf24; }
   .tier-a { background: rgba(124,58,237,0.15); color: #a78bfa; }
-  .tier-b { background: rgba(0,229,255,0.1); color: #67e8f9; }
+  .tier-b { background: rgba(0,229,255,0.1);   color: #67e8f9; }
   .tier-c { background: rgba(100,116,139,0.15); color: #94a3b8; }
-  .tier-d { background: rgba(239,68,68,0.1); color: #fca5a5; }
-
-  /* 右：チャートエリア */
-  .chart-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .fund-title {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-  }
-  .fund-archetype {
-    font-size: 0.78rem;
-    color: var(--accent3);
-    margin-top: 2px;
-    font-weight: 500;
-  }
-  .compare-toggle {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .compare-btn {
-    background: var(--border);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.72rem;
-    font-family: 'Rajdhani', sans-serif;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: all 0.15s;
-  }
-  .compare-btn.on {
-    background: rgba(124,58,237,0.15);
-    border-color: rgba(124,58,237,0.4);
-    color: #a78bfa;
-  }
-
-  /* スコアバー */
-  .scores-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-  }
-  .score-item {
-    text-align: center;
-  }
-  .score-label {
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  .score-val {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .score-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-top: 4px;
-    overflow: hidden;
-  }
-  .score-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-
+  .tier-d { background: rgba(239,68,68,0.1);   color: #fca5a5; }
+  .cat-index   { background: rgba(16,185,129,0.15);  color: #34d399; }
+  .cat-high    { background: rgba(251,191,36,0.15);   color: #fbbf24; }
+  .cat-monthly { background: rgba(244,114,182,0.15);  color: #f472b6; }
+  .cat-single  { background: rgba(251,146,60,0.15);   color: #fb923c; }
+  .category-header { font-family: 'Rajdhani', sans-serif; font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 8px 10px 3px; opacity: 0.7; }
+  .chart-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .fund-title { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; }
+  .fund-archetype { font-size: 0.78rem; color: var(--accent3); margin-top: 2px; font-weight: 500; }
+  .compare-btn { background: var(--border); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.15s; }
+  .compare-btn.on { background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.4); color: #a78bfa; }
+  .scores-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .score-item { text-align: center; }
+  .score-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .score-val { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; line-height: 1; }
+  .score-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
   canvas { display: block; margin: 0 auto; }
-
-  .legend {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
+  .legend { display: flex; gap: 20px; justify-content: center; font-size: 0.72rem; color: var(--muted); }
   .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-line {
-    width: 20px; height: 2px; border-radius: 2px;
-  }
-
-  /* カテゴリ区切り */
-  .category-header {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-    padding: 6px 10px 3px;
-    opacity: 0.6;
-  }
-
+  .legend-line { width: 20px; height: 2px; border-radius: 2px; }
+  .axis-guide { max-width: 1100px; margin: 20px auto 0; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .section-title { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .axis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .axis-item { display: flex; gap: 10px; align-items: flex-start; }
+  .axis-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .axis-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 3px; }
+  .axis-desc { font-size: 0.71rem; color: var(--muted); line-height: 1.6; }
+  .disclaimer { max-width: 1100px; margin: 16px auto 0; background: rgba(14,17,32,0.8); border: 1px solid var(--border); border-radius: 10px; padding: 16px 24px; }
+  .disclaimer p { font-size: 0.68rem; color: var(--muted); line-height: 1.9; }
+  .disclaimer p + p { margin-top: 4px; }
+  .footer { max-width: 1100px; margin: 16px auto 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px; }
+  .footer-copy { font-size: 0.68rem; color: var(--muted); line-height: 1.7; }
+  .footer-link a { font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--accent); text-decoration: none; border: 1px solid rgba(0,229,255,0.3); padding: 5px 12px; border-radius: 5px; transition: all 0.15s; }
+  .footer-link a:hover { background: rgba(0,229,255,0.08); }
   @media (max-width: 768px) {
     .layout { grid-template-columns: 1fr; }
     .scores-grid { grid-template-columns: repeat(3, 1fr); }
+    .axis-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer { flex-direction: column; gap: 10px; text-align: center; }
   }
 </style>
 </head>
@@ -236,7 +86,13 @@
 
 <div class="layout">
   <div class="fund-list-panel">
-    <div class="panel-title">Fund Select</div>
+    <div class="panel-top">
+      <div class="panel-title">Fund Select</div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnTier" onclick="switchView('tier')">Tier</button>
+        <button class="view-btn" id="btnCat" onclick="switchView('category')">Category</button>
+      </div>
+    </div>
     <div id="fundList"></div>
   </div>
   <div class="chart-panel">
@@ -245,9 +101,7 @@
         <div class="fund-title" id="chartTitle">—</div>
         <div class="fund-archetype" id="chartArchetype"></div>
       </div>
-      <div class="compare-toggle">
-        <button class="compare-btn" id="compareBtn" onclick="toggleCompare()">◎ 平均と比較</button>
-      </div>
+      <button class="compare-btn" id="compareBtn" onclick="toggleCompare()">◎ 平均と比較</button>
     </div>
     <div class="scores-grid" id="scoresGrid"></div>
     <canvas id="radar" width="420" height="300"></canvas>
@@ -255,40 +109,103 @@
   </div>
 </div>
 
+<div class="axis-guide">
+  <div class="section-title">Rating Axis — 評価軸の説明</div>
+  <div class="axis-grid">
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#00e5ff"></div>
+      <div>
+        <div class="axis-name" style="color:#00e5ff">成長性</div>
+        <div class="axis-desc">年率換算リターンをもとにしたキャピタルゲインの伸びしろ。元本100万円からどれだけ資産が増えたかを年率で評価。</div>
+      </div>
+    </div>
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#a78bfa"></div>
+      <div>
+        <div class="axis-name" style="color:#a78bfa">効率性</div>
+        <div class="axis-desc">シャープレシオをもとにしたリスク対リターンの効率。値動きのリスクに対して、どれだけ効率よく稼いでいるかを示す。</div>
+      </div>
+    </div>
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#f59e0b"></div>
+      <div>
+        <div class="axis-name" style="color:#f59e0b">配当力</div>
+        <div class="axis-desc">実際に手元に届いたインカムゲイン（分配金・配当金）の累計額。現金を生み出す力を評価。</div>
+      </div>
+    </div>
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#10b981"></div>
+      <div>
+        <div class="axis-name" style="color:#10b981">収益力</div>
+        <div class="axis-desc">キャピタルとインカムを合算したトータルリターンの絶対額。最終的な「勝ち」の大きさを評価。</div>
+      </div>
+    </div>
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#f472b6"></div>
+      <div>
+        <div class="axis-name" style="color:#f472b6">勝率</div>
+        <div class="axis-desc">月次でプラスになった月の割合。高いほど「負ける月が少ない」安定したファンド。心理的な安心感にも直結する。</div>
+      </div>
+    </div>
+    <div class="axis-item">
+      <div class="axis-dot" style="background:#60a5fa"></div>
+      <div>
+        <div class="axis-name" style="color:#60a5fa">防御力</div>
+        <div class="axis-desc">最大ドローダウン（最大下落幅）の小ささ。値が高いほど暴落時の下落が少なく、資産を守る力が強い。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer">
+  <div class="section-title" style="margin-bottom:10px">Disclaimer — 免責事項</div>
+  <p>・本データはレミナスブログが運営する実口座のリアルデータをもとに集計しています。集計開始は2024年5月であり、運用期間・相場環境によって結果は大きく異なる場合があります。</p>
+  <p>・各スコアは25ファンド間の相対評価（min-max正規化）であり、絶対的な優劣を示すものではありません。市場環境の変化により、今後のパフォーマンスが過去の結果と異なる可能性があります。</p>
+  <p>・本コンテンツは情報提供を目的としており、特定のファンドへの投資を推奨するものではありません。投資判断はご自身の責任においてお願いします。</p>
+</div>
+
+<div class="footer">
+  <div class="footer-copy">© 2024–2026 Reminusvlog. All rights reserved.<br>データ集計基準：2026年2月末時点</div>
+  <div class="footer-link">
+    <a href="https://www.youtube.com/c/reminusvlog" target="_blank">▶ Reminusvlog — YouTube</a>
+  </div>
+</div>
+
 <script>
 const FUNDS = {
-  "NDX GLD+":    { tier:"S", scores:{成長性:10.0,効率性:9.14,配当力:3.85,収益力:9.59,勝率:10.0,防御力:10.0}, archetype:"🏆 全方位チャンピオン" },
-  "SPX GLD+":    { tier:"S", scores:{成長性:9.53,効率性:8.99,配当力:3.86,収益力:10.0,勝率:9.09,防御力:4.25}, archetype:"⚔️ 収益特化の覇者" },
-  "BTI":         { tier:"S", scores:{成長性:6.91,効率性:10.0,配当力:3.06,収益力:6.48,勝率:8.68,防御力:9.36}, archetype:"🦍 効率の孤高ゴリラ" },
-  "USTECH20":    { tier:"S", scores:{成長性:5.75,効率性:4.83,配当力:4.70,収益力:4.25,勝率:7.58,防御力:0.0}, archetype:"🚀 高リスク高リターン型" },
-  "オルカン":      { tier:"S", scores:{成長性:5.0,効率性:6.40,配当力:4.38,収益力:3.92,勝率:9.85,防御力:5.22}, archetype:"🌍 安定の全世界型" },
-  "FANG+":       { tier:"A", scores:{成長性:5.3,効率性:4.76,配当力:4.87,収益力:3.84,勝率:7.58,防御力:0.85}, archetype:"💻 ハイテク攻撃型" },
-  "SPX":         { tier:"A", scores:{成長性:4.84,効率性:5.84,配当力:4.47,収益力:3.63,勝率:8.33,防御力:4.14}, archetype:"📈 S&P500スタンダード" },
-  "NDX":         { tier:"A", scores:{成長性:4.93,効率性:5.28,配当力:4.42,収益力:3.57,勝率:7.58,防御力:2.86}, archetype:"🖥️ ナスダック型" },
-  "1489":        { tier:"A", scores:{成長性:4.07,効率性:4.94,配当力:0.10,収益力:1.73,勝率:9.09,防御力:4.51}, archetype:"🇯🇵 日本高配当の雄" },
-  "SP10":        { tier:"A", scores:{成長性:4.86,効率性:4.83,配当力:3.87,収益力:2.65,勝率:7.27,防御力:0.35}, archetype:"🔟 米国集中型" },
-  "VYM":         { tier:"B", scores:{成長性:4.52,効率性:5.54,配当力:0.76,収益力:2.49,勝率:8.33,防御力:4.93}, archetype:"💼 米高配当の定番" },
-  "HDV":         { tier:"B", scores:{成長性:4.08,効率性:5.32,配当力:1.19,収益力:2.01,勝率:6.06,防御力:7.28}, archetype:"🛡️ ディフェンシブ高配当" },
-  "DGRO":        { tier:"B", scores:{成長性:4.07,効率性:4.94,配当力:0.10,収益力:1.73,勝率:9.09,防御力:4.51}, archetype:"📊 増配成長型" },
-  "DGRW":        { tier:"B", scores:{成長性:3.74,効率性:4.38,配当力:0.0, 収益力:1.25,勝率:8.33,防御力:4.14}, archetype:"📈 増配クオリティ型" },
-  "VIG":         { tier:"B", scores:{成長性:3.89,効率性:4.72,配当力:0.15,収益力:1.51,勝率:6.82,防御力:4.74}, archetype:"🌱 連続増配型" },
-  "SPYD":        { tier:"C", scores:{成長性:3.67,効率性:4.53,配当力:1.87,収益力:1.57,勝率:6.06,防御力:4.12}, archetype:"💰 超高配当バリュー型" },
-  "EUDG":        { tier:"C", scores:{成長性:3.77,効率性:4.34,配当力:0.62,収益力:1.39,勝率:7.58,防御力:5.28}, archetype:"🇪🇺 欧州増配型" },
-  "JEPQ":        { tier:"C", scores:{成長性:3.34,効率性:3.33,配当力:4.33,収益力:1.37,勝率:7.58,防御力:2.35}, archetype:"✨ カバコ高インカム型" },
-  "SCHD":        { tier:"C", scores:{成長性:3.88,効率性:4.79,配当力:1.27,収益力:1.06,勝率:7.22,防御力:4.48}, archetype:"🏅 米高配当クオリティ" },
-  "AB.D":        { tier:"C", scores:{成長性:1.97,効率性:1.65,配当力:9.77,収益力:1.05,勝率:4.07,防御力:2.31}, archetype:"💎 インカム特化・守護型" },
-  "JEPI":        { tier:"D", scores:{成長性:2.87,効率性:3.22,配当力:2.95,収益力:0.78,勝率:6.06,防御力:4.79}, archetype:"🌊 低ボラ毎月分配型" },
-  "世界のベスト":    { tier:"D", scores:{成長性:2.70,効率性:2.85,配当力:4.46,収益力:0.56,勝率:6.06,防御力:7.50}, archetype:"🌐 世界株ターゲット型" },
-  "FEPI":        { tier:"D", scores:{成長性:2.17,効率性:1.87,配当力:5.54,収益力:0.35,勝率:3.03,防御力:5.24}, archetype:"⚡ 超高配当特化型" },
-  "AIPI":        { tier:"D", scores:{成長性:0.53,効率性:0.11,配当力:8.01,収益力:0.0, 勝率:0.0, 防御力:4.71}, archetype:"🤖 AI特化インカム型" },
-  "CEPI":        { tier:"D", scores:{成長性:0.0, 効率性:0.0, 配当力:10.0,収益力:0.01,勝率:1.52,防御力:2.12}, archetype:"👑 インカム絶対王者" },
+  "NDX GLD+":  { tier:"S", cat:"index",   scores:{成長性:10.0,効率性:9.14,配当力:3.85,収益力:9.59,勝率:10.0,防御力:10.0}, archetype:"🏆 全方位チャンピオン" },
+  "SPX GLD+":  { tier:"S", cat:"index",   scores:{成長性:9.53,効率性:8.99,配当力:3.86,収益力:10.0,勝率:9.09,防御力:4.25}, archetype:"⚔️ 収益特化の覇者" },
+  "BTI":       { tier:"S", cat:"single",  scores:{成長性:6.91,効率性:10.0,配当力:3.06,収益力:6.48,勝率:8.68,防御力:9.36}, archetype:"🦍 効率の孤高ゴリラ" },
+  "USTECH20":  { tier:"S", cat:"index",   scores:{成長性:5.75,効率性:4.83,配当力:4.70,収益力:4.25,勝率:7.58,防御力:0.0},  archetype:"🚀 高リスク高リターン型" },
+  "オルカン":    { tier:"S", cat:"index",   scores:{成長性:5.0, 効率性:6.40,配当力:4.38,収益力:3.92,勝率:9.85,防御力:5.22}, archetype:"🌍 安定の全世界型" },
+  "FANG+":     { tier:"A", cat:"index",   scores:{成長性:5.3, 効率性:4.76,配当力:4.87,収益力:3.84,勝率:7.58,防御力:0.85}, archetype:"💻 ハイテク攻撃型" },
+  "SPX":       { tier:"A", cat:"index",   scores:{成長性:4.84,効率性:5.84,配当力:4.47,収益力:3.63,勝率:8.33,防御力:4.14}, archetype:"📈 S&P500スタンダード" },
+  "NDX":       { tier:"A", cat:"index",   scores:{成長性:4.93,効率性:5.28,配当力:4.42,収益力:3.57,勝率:7.58,防御力:2.86}, archetype:"🖥️ ナスダック型" },
+  "1489":      { tier:"A", cat:"high",    scores:{成長性:4.07,効率性:4.94,配当力:0.10,収益力:1.73,勝率:9.09,防御力:4.51}, archetype:"🇯🇵 日本高配当の雄" },
+  "SP10":      { tier:"A", cat:"index",   scores:{成長性:4.86,効率性:4.83,配当力:3.87,収益力:2.65,勝率:7.27,防御力:0.35}, archetype:"🔟 米国集中型" },
+  "VYM":       { tier:"B", cat:"high",    scores:{成長性:4.52,効率性:5.54,配当力:0.76,収益力:2.49,勝率:8.33,防御力:4.93}, archetype:"💼 米高配当の定番" },
+  "HDV":       { tier:"B", cat:"high",    scores:{成長性:4.08,効率性:5.32,配当力:1.19,収益力:2.01,勝率:6.06,防御力:7.28}, archetype:"🛡️ ディフェンシブ高配当" },
+  "DGRO":      { tier:"B", cat:"high",    scores:{成長性:4.07,効率性:4.94,配当力:0.10,収益力:1.73,勝率:9.09,防御力:4.51}, archetype:"📊 増配成長型" },
+  "DGRW":      { tier:"B", cat:"high",    scores:{成長性:3.74,効率性:4.38,配当力:0.0, 収益力:1.25,勝率:8.33,防御力:4.14}, archetype:"📈 増配クオリティ型" },
+  "VIG":       { tier:"B", cat:"high",    scores:{成長性:3.89,効率性:4.72,配当力:0.15,収益力:1.51,勝率:6.82,防御力:4.74}, archetype:"🌱 連続増配型" },
+  "SPYD":      { tier:"C", cat:"high",    scores:{成長性:3.67,効率性:4.53,配当力:1.87,収益力:1.57,勝率:6.06,防御力:4.12}, archetype:"💰 超高配当バリュー型" },
+  "EUDG":      { tier:"C", cat:"high",    scores:{成長性:3.77,効率性:4.34,配当力:0.62,収益力:1.39,勝率:7.58,防御力:5.28}, archetype:"🇪🇺 欧州増配型" },
+  "JEPQ":      { tier:"C", cat:"monthly", scores:{成長性:3.34,効率性:3.33,配当力:4.33,収益力:1.37,勝率:7.58,防御力:2.35}, archetype:"✨ カバコ高インカム型" },
+  "SCHD":      { tier:"C", cat:"high",    scores:{成長性:3.88,効率性:4.79,配当力:1.27,収益力:1.06,勝率:7.22,防御力:4.48}, archetype:"🏅 米高配当クオリティ" },
+  "AB.D":      { tier:"C", cat:"monthly", scores:{成長性:1.97,効率性:1.65,配当力:9.77,収益力:1.05,勝率:4.07,防御力:2.31}, archetype:"💎 インカム特化・守護型" },
+  "JEPI":      { tier:"D", cat:"monthly", scores:{成長性:2.87,効率性:3.22,配当力:2.95,収益力:0.78,勝率:6.06,防御力:4.79}, archetype:"🌊 低ボラ毎月分配型" },
+  "世界のベスト":  { tier:"D", cat:"monthly", scores:{成長性:2.70,効率性:2.85,配当力:4.46,収益力:0.56,勝率:6.06,防御力:7.50}, archetype:"🌐 世界株ターゲット型" },
+  "FEPI":      { tier:"D", cat:"monthly", scores:{成長性:2.17,効率性:1.87,配当力:5.54,収益力:0.35,勝率:3.03,防御力:5.24}, archetype:"⚡ 超高配当特化型" },
+  "AIPI":      { tier:"D", cat:"monthly", scores:{成長性:0.53,効率性:0.11,配当力:8.01,収益力:0.0, 勝率:0.0, 防御力:4.71}, archetype:"🤖 AI特化インカム型" },
+  "CEPI":      { tier:"D", cat:"monthly", scores:{成長性:0.0, 効率性:0.0, 配当力:10.0,収益力:0.01,勝率:1.52,防御力:2.12}, archetype:"👑 インカム絶対王者" },
 };
 
 const AXES = ["成長性","効率性","配当力","収益力","勝率","防御力"];
 const TIER_COLORS = { S:"#fbbf24", A:"#a78bfa", B:"#00e5ff", C:"#94a3b8", D:"#fca5a5" };
-const AXIS_COLORS = ["#00e5ff","#7c3aed","#f59e0b","#10b981","#f472b6","#60a5fa"];
+const CAT_COLORS  = { index:"#34d399", high:"#fbbf24", monthly:"#f472b6", single:"#fb923c" };
+const CAT_LABELS  = { index:"インデックス取り崩し", high:"高配当ETF", monthly:"毎月分配型", single:"個別銘柄" };
+const AXIS_COLORS = ["#00e5ff","#a78bfa","#f59e0b","#10b981","#f472b6","#60a5fa"];
 
-// 平均スコア計算
 const AVG_SCORES = {};
 AXES.forEach(ax => {
   const vals = Object.values(FUNDS).map(f => f.scores[ax]);
@@ -297,37 +214,61 @@ AXES.forEach(ax => {
 
 let currentFund = "BTI";
 let showCompare = false;
+let viewMode = "tier";
+
+function switchView(mode) {
+  viewMode = mode;
+  document.getElementById('btnTier').classList.toggle('active', mode === 'tier');
+  document.getElementById('btnCat').classList.toggle('active', mode === 'category');
+  rebuildList();
+}
 
 function toggleCompare() {
   showCompare = !showCompare;
   document.getElementById('compareBtn').classList.toggle('on', showCompare);
-  updateLegend();
-  drawRadar();
+  updateLegend(); drawRadar();
 }
 
-function buildFundList() {
+function rebuildList() {
   const container = document.getElementById('fundList');
-  const tiers = ['S','A','B','C','D'];
-  tiers.forEach(tier => {
-    const div = document.createElement('div');
-    div.className = 'category-header';
-    div.textContent = `Tier ${tier}`;
-    container.appendChild(div);
-    Object.entries(FUNDS)
-      .filter(([,d]) => d.tier === tier)
-      .forEach(([name, data]) => {
-        const item = document.createElement('div');
-        item.className = 'fund-item' + (name === currentFund ? ' active' : '');
-        item.id = 'fi_' + name;
-        item.innerHTML = `
-          <div class="fund-dot" style="background:${TIER_COLORS[tier]}"></div>
-          <div class="fund-name">${name}</div>
-          <div class="fund-tier tier-${tier.toLowerCase()}">Tier ${tier}</div>
-        `;
-        item.onclick = () => selectFund(name);
-        container.appendChild(item);
-      });
-  });
+  container.innerHTML = '';
+  if (viewMode === 'tier') {
+    ['S','A','B','C','D'].forEach(tier => {
+      addHeader(container, `Tier ${tier}`);
+      Object.entries(FUNDS).filter(([,d]) => d.tier === tier)
+        .forEach(([name, data]) => addItem(container, name, data, 'tier'));
+    });
+  } else {
+    ['index','high','monthly','single'].forEach(cat => {
+      const entries = Object.entries(FUNDS).filter(([,d]) => d.cat === cat);
+      if (!entries.length) return;
+      addHeader(container, CAT_LABELS[cat]);
+      entries.forEach(([name, data]) => addItem(container, name, data, 'category'));
+    });
+  }
+}
+
+function addHeader(container, text) {
+  const div = document.createElement('div');
+  div.className = 'category-header';
+  div.textContent = text;
+  container.appendChild(div);
+}
+
+function addItem(container, name, data, mode) {
+  const item = document.createElement('div');
+  item.className = 'fund-item' + (name === currentFund ? ' active' : '');
+  item.id = 'fi_' + name;
+  const color = mode === 'tier' ? TIER_COLORS[data.tier] : CAT_COLORS[data.cat];
+  const badgeClass = mode === 'tier' ? `tier-${data.tier.toLowerCase()}` : `cat-${data.cat}`;
+  const badgeText = mode === 'tier' ? `Tier ${data.tier}` : CAT_LABELS[data.cat].slice(0,5);
+  item.innerHTML = `
+    <div class="fund-dot" style="background:${color}"></div>
+    <div class="fund-name">${name}</div>
+    <div class="fund-badge ${badgeClass}">${badgeText}</div>
+  `;
+  item.onclick = () => selectFund(name);
+  container.appendChild(item);
 }
 
 function selectFund(name) {
@@ -343,9 +284,7 @@ function updateChart() {
   document.getElementById('chartTitle').textContent = currentFund;
   document.getElementById('chartTitle').style.color = TIER_COLORS[fund.tier];
   document.getElementById('chartArchetype').textContent = fund.archetype;
-  updateScores();
-  updateLegend();
-  drawRadar();
+  updateScores(); updateLegend(); drawRadar();
 }
 
 function updateScores() {
@@ -367,8 +306,7 @@ function updateScores() {
 
 function updateLegend() {
   const fund = FUNDS[currentFund];
-  const legend = document.getElementById('legend');
-  legend.innerHTML = `
+  document.getElementById('legend').innerHTML = `
     <div class="legend-item">
       <div class="legend-line" style="background:${TIER_COLORS[fund.tier]}"></div>
       <span>${currentFund}</span>
@@ -382,107 +320,50 @@ function drawRadar() {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   ctx.clearRect(0, 0, W, H);
-
-  const cx = W/2, cy = H/2 + 5;
-  const R = Math.min(W, H) * 0.36;
-  const n = AXES.length;
+  const cx = W/2, cy = H/2 + 5, R = Math.min(W,H) * 0.36, n = AXES.length;
   const fund = FUNDS[currentFund];
-
-  function axisAngle(i) { return (Math.PI * 2 * i / n) - Math.PI/2; }
-  function point(val, i, radius) {
-    const a = axisAngle(i);
-    const r = (val/10) * radius;
-    return { x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) };
-  }
-
-  // グリッド
+  const axisAngle = i => (Math.PI*2*i/n) - Math.PI/2;
+  const point = (val, i, radius) => {
+    const a = axisAngle(i), r = (val/10)*radius;
+    return { x: cx+r*Math.cos(a), y: cy+r*Math.sin(a) };
+  };
   [2,4,6,8,10].forEach(ring => {
     ctx.beginPath();
-    for (let i = 0; i < n; i++) {
-      const pt = point(ring, i, R);
-      i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y);
-    }
+    for (let i=0; i<n; i++) { const pt=point(ring,i,R); i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y); }
     ctx.closePath();
-    ctx.strokeStyle = ring === 10 ? 'rgba(30,37,64,0.9)' : 'rgba(30,37,64,0.6)';
-    ctx.lineWidth = ring === 10 ? 1.5 : 1;
-    ctx.stroke();
-    // リング数値
-    const labelPt = point(ring, 0, R);
-    ctx.fillStyle = 'rgba(100,116,139,0.5)';
-    ctx.font = '9px Rajdhani';
-    ctx.fillText(ring, labelPt.x + 4, labelPt.y);
+    ctx.strokeStyle = ring===10?'rgba(30,37,64,0.9)':'rgba(30,37,64,0.6)';
+    ctx.lineWidth = ring===10?1.5:1; ctx.stroke();
+    const lp=point(ring,0,R); ctx.fillStyle='rgba(100,116,139,0.5)'; ctx.font='9px Rajdhani'; ctx.fillText(ring,lp.x+4,lp.y);
   });
-
-  // 軸線
-  for (let i = 0; i < n; i++) {
-    const pt = point(10, i, R);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(pt.x, pt.y);
-    ctx.strokeStyle = 'rgba(30,37,64,0.8)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    // ラベル
-    const la = axisAngle(i);
-    const lx = cx + (R + 28)*Math.cos(la);
-    const ly = cy + (R + 28)*Math.sin(la);
-    ctx.fillStyle = AXIS_COLORS[i];
-    ctx.font = '500 11px "Noto Sans JP"';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(AXES[i], lx, ly);
+  for (let i=0; i<n; i++) {
+    const pt=point(10,i,R);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(pt.x,pt.y);
+    ctx.strokeStyle='rgba(30,37,64,0.8)'; ctx.lineWidth=1; ctx.stroke();
+    const la=axisAngle(i), lx=cx+(R+28)*Math.cos(la), ly=cy+(R+28)*Math.sin(la);
+    ctx.fillStyle=AXIS_COLORS[i]; ctx.font='500 11px "Noto Sans JP"';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(AXES[i],lx,ly);
   }
-
-  // 比較（平均）
   if (showCompare) {
     ctx.beginPath();
-    AXES.forEach((ax, i) => {
-      const pt = point(AVG_SCORES[ax], i, R);
-      i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y);
-    });
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(71,85,105,0.15)';
-    ctx.fill();
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4,3]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    AXES.forEach((ax,i) => { const pt=point(AVG_SCORES[ax],i,R); i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y); });
+    ctx.closePath(); ctx.fillStyle='rgba(71,85,105,0.15)'; ctx.fill();
+    ctx.strokeStyle='#475569'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
   }
-
-  // メインファンド
-  const color = TIER_COLORS[fund.tier];
-  const hexStr = color.replace('#','');
-  const r = parseInt(hexStr.substring(0,2),16);
-  const g = parseInt(hexStr.substring(2,4),16);
-  const b = parseInt(hexStr.substring(4,6),16);
-
+  const color=TIER_COLORS[fund.tier], hx=color.replace('#','');
+  const r=parseInt(hx.substring(0,2),16), g=parseInt(hx.substring(2,4),16), b=parseInt(hx.substring(4,6),16);
   ctx.beginPath();
-  AXES.forEach((ax, i) => {
-    const pt = point(fund.scores[ax], i, R);
-    i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y);
-  });
-  ctx.closePath();
-  ctx.fillStyle = `rgba(${r},${g},${b},0.12)`;
-  ctx.fill();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // 頂点ドット
-  AXES.forEach((ax, i) => {
-    const pt = point(fund.scores[ax], i, R);
-    ctx.beginPath();
-    ctx.arc(pt.x, pt.y, 4, 0, Math.PI*2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(14,17,32,0.8)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+  AXES.forEach((ax,i) => { const pt=point(fund.scores[ax],i,R); i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y); });
+  ctx.closePath(); ctx.fillStyle=`rgba(${r},${g},${b},0.12)`; ctx.fill();
+  ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+  AXES.forEach((ax,i) => {
+    const pt=point(fund.scores[ax],i,R);
+    ctx.beginPath(); ctx.arc(pt.x,pt.y,4,0,Math.PI*2);
+    ctx.fillStyle=color; ctx.fill();
+    ctx.strokeStyle='rgba(14,17,32,0.8)'; ctx.lineWidth=1.5; ctx.stroke();
   });
 }
 
-buildFundList();
+rebuildList();
 updateChart();
 </script>
 </body>
